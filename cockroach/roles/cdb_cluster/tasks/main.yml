@@ -1,0 +1,9 @@
+---
+- name: Start cluster nodes
+  shell: |
+    {{ out_dir }}/startup.sh
+  register: host_status
+# nohup {{ out_dir }}/startup.sh > {{ out_dir }}/startup_logs.out 2>&1 & sleep 3
+- name: debug
+  debug:
+    var: host_status

@@ -1,0 +1,17 @@
+---
+- name: set host addresses on port 26257
+  set_fact:
+    HOST_RPC_ADDRS: "{{ HOST_RPC_ADDRS | default([]) + [':'.join((item,'26257'))] }}"
+  with_inventory_hostnames:
+    - all
+
+- name: debug dns
+  debug: msg="{{ HOST_RPC_ADDRS }}"
+
+- name: create startup.sh file
+  template:
+    src: "startup.j2"
+    dest: "{{ out_dir }}/startup.sh"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'

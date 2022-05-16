@@ -1,0 +1,40 @@
+---
+- name: Generic host setup
+  hosts: all
+  # become: true
+  roles:
+    - cdb_common
+    - cdb_setup
+    - cdb_cluster
+
+- name: init cluster
+  hosts: "{{ groups['all'][0] }}"
+  tasks:
+    - name: init cluster
+      shell: |
+        {{ install_location }}/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64/cockroach init --insecure --host={{ inventory_hostname }}
+      register: init_output
+    - name: debug
+      debug:
+        var: init_output
+# nohup cockroach init --insecure --host={{ inventory_hostname }} > {{ out_dir }}/cluster_init.out 2>&1 & sleep 3
+# - name: Create database and tables
+#   hosts: "{{ groups['all'][0] }}"
+#   tasks:
+#     - name: copy db script
+#       copy:
+#         src: ../../dbScripts/cockroachDB/createTables.sql
+#         dest: "{{ out_dir }}"
+#     - name: create db and tables
+#       shell: |
+#         nohup cockroach sql --host={{ inventory_hostname }} -d yb_demo --insecure < {{ out_dir }}/createTables.sql > {{ out_dir }}/db_script.log 2>&1 & sleep 5
+
+# - name: setup haproxy to be used from ansible hosts
+#   hosts: 127.0.0.1
+#   connection: local
+#   tasks:
+#     - name: haproxy setup
+#       include_role:
+#         name: haproxy_setup
+
+

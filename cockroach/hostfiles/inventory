@@ -1,0 +1,11 @@
+[us-west-2]
+ec2-54-70-250-9.us-west-2.compute.amazonaws.com
+ec2-52-43-173-174.us-west-2.compute.amazonaws.com
+ec2-34-208-213-44.us-west-2.compute.amazonaws.com
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python
+
+[us-west-2:vars]
+region=us-west-2
+datacenter=us-west-2abc

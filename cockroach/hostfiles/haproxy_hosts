@@ -1,0 +1,8 @@
+[haproxy_hosts]
+<ip1>
+
+[cdb_host]
+<ip2>
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
