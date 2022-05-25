@@ -1,0 +1,4 @@
+[clients]
+%{ for index, ip in client_ips ~}
+${ip}
+%{ endfor ~}
