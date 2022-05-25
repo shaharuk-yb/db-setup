@@ -20,6 +20,13 @@
     - "{{ ulimits_security }}"
   become: true
 
+- name: modify /etc/security/limits.d/20-nproc.conf
+  replace:
+    path: /etc/security/limits.d/20-nproc.conf
+    regexp: '4096'
+    replace: '40000'
+  become: true
+
 - name: Delete existing dist folder
   file:
     path: "{{ item }}"

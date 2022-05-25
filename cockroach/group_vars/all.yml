@@ -15,4 +15,4 @@ wait_time: 1
 ulimits_security:
   - { limit_type: '-', limit_item: 'core', value: unlimited }
   - { limit_type: '-', limit_item: 'nofile', value: 1048576 }
-  - { limit_type: '-', limit_item: 'nproc', value: 12000 }
+  - { limit_type: '-', limit_item: 'nproc', value: 40000 }
