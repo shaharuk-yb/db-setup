@@ -1,6 +1,10 @@
 # Deploy CockroachDB Cluster With Ansible 
 
 ## Prerequisites
+- install ansible
+```shell
+  brew install ansible
+```
 
 - Configure ./hostfiles/inventory file with entries for the machines in your cluster. It should include all the machines you want to include in your setup.
   Also include the varables for region and datacenter, where your machines are located. (NOTE: this is just a logical separation, it actually depends on where your instance is)
