@@ -1,0 +1,96 @@
+---
+- name: manage cockroachDB cluster
+  hosts: all
+  tasks:
+    - name: remove processes running cockroach
+      shell: |
+        kill -9 $(ps -ef|grep -w cockroach|grep -v grep |awk '{print $2}')
+      when: stop is defined or restart is defined or destroy is defined or soft_destroy is defined
+      ignore_errors: yes
+
+    - name: Delete existing dist folder
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ install_location }}"
+        - "{{ install_location }}/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64/cockroach"
+        - "{{ data_dir }}"
+        - "{{ out_dir }}"
+      when: destroy is defined
+
+    - name: soft_destroy=deleting only data dir
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ data_dir }}"
+      when: soft_destroy is defined
+
+    - name: ensure a list of packages un-installed
+      apt:
+        name: "{{ packages_ubuntu }}"
+        state: absent
+      become: true
+      when: destroy is defined
+
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: uninstall haproxy and cockroach from ansible host
+      block:
+        - name: uninstalling haproxy
+          apt:
+            name: haproxy
+            state: absent
+          become: true
+        - name: removing directories
+          file:
+            path: "{{ item }}"
+            state: absent
+          with_items:
+            - "{{ install_location }}"
+            - "{{ out_dir }}"
+            - /usr/local/bin/cockroach
+      when: destroy is defined
+
+
+- name: cdb_nodes
+  hosts: all
+  tasks:
+    - name: start cdb nodes
+      include_role:
+        name: cdb_cluster
+      when: start is defined or restart is defined
+
+- name: Introducing chaos
+  hosts: "{{ groups['all'] | random }}"
+  gather_facts: false
+  tasks:
+    - name: stopping processes
+      block:
+        - name: node info
+          debug:
+            msg: Killing node {{ inventory_hostname }}
+        - name: remove processes running cockroach
+          shell: |
+            kill -9 $(ps -ef|grep -w cockroach|grep -v grep |awk '{print $2}')
+        - name: print  msg
+          debug:
+            msg: waiting {{ chaos_time }} seconds before restarting node {{ inventory_hostname }}
+        - name: wait
+          wait_for:
+            timeout: "{{ chaos_time }}"
+
+        - name: start node
+          shell: |
+            nohup {{ out_dir }}/startup.sh > {{ out_dir }}/startup_logs.out 2>&1 & sleep 3
+        - name: print  msg
+          debug:
+            msg: waiting {{ wait_time }} seconds for node {{ inventory_hostname }} to load data
+        - name: wait
+          wait_for:
+            timeout: "{{ wait_time }}"
+      when: chaos is defined
+
+

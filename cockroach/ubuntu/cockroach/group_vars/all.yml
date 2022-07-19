@@ -1,0 +1,18 @@
+#host-setup props-----------------------------------------
+ansible_user: root
+packages_ubuntu:
+  - tzdata
+#install-cockroach props-------------------------------------------------
+data_dir: /cockroach/data
+out_dir: /cockroach/conf
+binary_url: https://binaries.cockroachdb.com
+CDB_SNAPSHOT: v20.2.4
+install_location: /var/lib/cockroach
+haproxy_port: 26257
+chaos_time: 60
+wait_time: 120
+
+ulimits_security:
+  - { limit_type: '-', limit_item: 'core', value: unlimited }
+  - { limit_type: '-', limit_item: 'nofile', value: 1048576 }
+  - { limit_type: '-', limit_item: 'nproc', value: 12000 }

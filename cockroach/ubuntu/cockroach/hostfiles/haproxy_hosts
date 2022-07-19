@@ -1,0 +1,10 @@
+[haproxy_hosts]
+104.131.179.10
+159.203.21.64
+128.199.1.166
+
+[cdb_host]
+167.71.252.71
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

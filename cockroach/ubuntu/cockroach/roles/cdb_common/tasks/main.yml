@@ -1,0 +1,112 @@
+---
+- name: Add all nodes as known hosts
+  known_hosts:
+    name: "{{ inventory_hostname }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -H {{ inventory_hostname }}') }}"
+
+- name: ensure a list of packages installed
+  apt:
+    name: "{{ packages_ubuntu }}"
+    state: present
+    update_cache: yes
+  become: true
+
+- name: configure system settings, file descriptors and number of threads
+  pam_limits:
+    domain: "{{ ansible_user }}"
+    limit_type: "{{item.limit_type}}"
+    limit_item: "{{item.limit_item}}"
+    value: "{{item.value}}"
+  with_items:
+    - "{{ ulimits_security }}"
+  become: true
+
+#- name: Delete existing dist folder
+#  file:
+#    path: "{{ item }}"
+#    state: absent
+#  with_items:
+#    - "{{ install_location }}"
+#    - "{{ install_location }}/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64/cockroach"
+#    - "{{ data_dir }}"
+
+#- name: stop existing ntpd process
+#  shell: |
+#    kill -9 $(ps -ef|grep ntpd |awk 'NR==1{print $2}')
+#  ignore_errors: yes
+
+#- name: remove lines starting with server from ntp.conf
+#  lineinfile:
+#    path: /etc/ntp.conf
+#    state: absent
+#    regexp: '^server'
+#- name: remove lines starting with server from ntp.conf
+#  lineinfile:
+#    path: /etc/ntp.conf
+#    state: absent
+#    regexp: '^pool'
+#
+#- name: update /etc/ntp.conf
+#  shell: |
+#    cat >>/etc/ntp.conf <<EOL
+#    server time1.google.com iburst
+#    server time2.google.com iburst
+#    server time3.google.com iburst
+#    server time4.google.com iburst
+#    EOL
+
+#- name: Sync clocks
+#  shell: "ntpd -b time.google.com"
+
+#- name: start ntp service
+#  service:
+#    name: ntp
+#    state: restarted
+#
+#- name: print ntp settings
+#  shell: "ntpq -p"
+#  register: output
+#
+#- name: showing ntp values
+#  debug:
+#    msg: "{{ output.stdout_lines }}"
+
+#==============Download and install cockroachdb binaries =====================
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  with_items:
+    - "{{ install_location }}"
+    - "{{ data_dir }}"
+    - "{{ out_dir }}"
+  become_user: "{{ ansible_user }}"
+
+- name: Get installation files
+  get_url:
+    url: "{{ binary_url }}/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64.tgz"
+    dest: "/tmp/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64.tgz"
+    validate_certs: false
+
+- name: Unpack/install binaries
+  unarchive:
+    src: "/tmp/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64.tgz"
+    dest: "{{ install_location }}"
+    copy: no
+
+- name: create symlink to /usr/local/bin
+  file:
+    src: "{{ install_location }}/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64/cockroach"
+    dest: /usr/local/bin/cockroach
+    state: link
+
+- name: test the installation
+  shell: "{{ install_location }}/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64/cockroach version"
+  register: cversion
+
+- name: print output
+  debug:
+    var: cversion.stdout_lines
