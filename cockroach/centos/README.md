@@ -24,6 +24,25 @@ This is a two-step process
     ```shell
     terraform init
     ```
+
+- create inputs.json file with following syntax.
+    ```shell
+      {
+        "region": "us-west-2",
+        "az": "us-west-2a",
+        "node_count": "1",
+        "ami": "ami-0821373572f69d497",
+        "instance_type": "c5.large",
+        "pem_file_name": "<key-name>",
+        "pem_file_path": "<path-to-file>/<key-name>.pem",
+        "security_group": ["<your-sg>"],
+        "subnet_id": "<your-subnet>",
+        "user": "<username>"
+      }
+    ```
+    NOTE: Please don't check in above inputs.json to github with actual values
+
+
 - create instances
     ```shell
     terraform apply -var-file=inputs.json
