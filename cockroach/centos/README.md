@@ -114,9 +114,9 @@ NOTE:
 
 After the deployment of the cluster, the directory structure on cluster nodes will look like this:
 
-- *~/cockroach/data/*: Cockroach store.This includes all the data
+- *mnt/d0/cockroach/data/*: Cockroach store.This includes all the data
 
-- *~/cockroach/conf/*: This includes redirected output files and scripts. For internal use only.
+- *mnt/d0/cockroach/conf/*: This includes redirected output files and scripts. For internal use only.
 
 #### Introducing CHAOS in the clusters.
 Chaos is created by randomly killing a node in the cluster(by killing all cockroach processes on the node) for 2 minutes.
