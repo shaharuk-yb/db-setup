@@ -3,6 +3,7 @@
   hosts: all
   # become: true
   roles:
+    - disk_mount
     - cdb_common
     - cdb_setup
     - cdb_cluster

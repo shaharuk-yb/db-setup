@@ -1,6 +1,6 @@
 provider "aws" {
   region  = var.region
-  profile = "default"
+#  profile = "default"
 }
 
 resource "aws_instance" "test_server" {
@@ -13,10 +13,29 @@ resource "aws_instance" "test_server" {
   vpc_security_group_ids      = var.security_group
   subnet_id                   = var.subnet_id
   availability_zone           = var.az
+  root_block_device {
+    volume_size = 40
+    volume_type = "gp2"
+#    iops        = 120
+  }
+  ebs_block_device {
+    delete_on_termination = true
+    device_name = "/dev/xvdb"
+    iops        = var.iops
+    throughput  = var.throughput
+    volume_size = var.volumeSize
+    volume_type = var.volumeType
+    tags = {
+      "Name"     = "${var.user}_CRDB_DISK_${count.index + 1}"
+      "yb_dept"  = "perf"
+      "yb_task"  = "perf"
+      "yb_owner" = var.user
+    }
+  }
   tags = {
     "Name"     = "${var.user}_CRDB_${count.index + 1}"
     "yb_dept"  = "perf"
-    "yb_task"  = "tpcc"
+    "yb_task"  = "perf"
     "yb_owner" = var.user
   }
 

@@ -42,4 +42,20 @@ variable "user" {
   description = "add username so that resources are tagged correctly"
 }
 
+variable "volumeType" {
+  #  default = "gp3"
+  description = "volumeType gp2,gp3, etc"
+}
+variable "throughput" {
+  #  default = "125"
+  description = "disk throughput"
+}
+variable "iops" {
+  #  default = "3000"
+  description = "disk IOPS"
+}
+variable "volumeSize" {
+  #  default = "200"
+  description = "disk size"
+}
 

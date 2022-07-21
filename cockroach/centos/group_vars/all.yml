@@ -3,11 +3,15 @@ ansible_user: centos
 packages_centos:
   - tzdata
 #install-cockroach props-------------------------------------------------
-data_dir: ~/cockroach/data
-out_dir: ~/cockroach/conf
+device_name: /dev/xvdb
+cloud_type: aws
+mount_path: /mnt/d0
+
+data_dir: "{{ mount_path }}/cockroach/data"
+out_dir: "{{ mount_path }}/cockroach/conf"
 binary_url: https://binaries.cockroachdb.com
 CDB_SNAPSHOT: v21.2.0
-install_location: ~/install/cockroach
+install_location: "{{ mount_path }}/install/cockroach"
 haproxy_port: 26257
 chaos_time: 60
 wait_time: 1

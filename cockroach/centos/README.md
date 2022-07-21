@@ -37,12 +37,20 @@ This is a two-step process
         "pem_file_path": "<path-to-file>/<key-name>.pem",
         "security_group": ["<your-sg>"],
         "subnet_id": "<your-subnet>",
-        "user": "<username>"
+        "user": "<username>",
+        "volumeType": "gp3",
+        "throughput": 125,
+        "iops": 3000,
+        "volumeSize": 250
       }
     ```
     NOTE: Please don't check in above inputs.json to github with actual values
 
-
+- export aws secret and access key variables. You can generate secret and access key from aws console. If you had already configured aws cli, check the ~/.aws/credentials file for these
+  ```shell
+  export AWS_ACCESS_KEY_ID="<your-access-key>"
+  export AWS_SECRET_ACCESS_KEY="<your-secret-key>"
+  ```
 - create instances
     ```shell
     terraform apply -var-file=inputs.json

@@ -1,0 +1,18 @@
+- block:
+    - name: Install the script for discovering, updating fstab for & mounting ephemeral drives.
+      become: yes
+      become_method: sudo
+      vars:
+        device_paths: "{{ device_name }}"
+        mount_paths: "{{ mount_path }}"
+      template:
+        src: mount_ephemeral_drives.sh.j2
+        dest: /usr/local/bin/mount_ephemeral_drives.sh
+        owner: root
+        mode: 0755
+    - name: Run the idempotent script to mount the drives; output goes to system log file.
+      become: yes
+      become_method: sudo
+      command: /usr/local/bin/mount_ephemeral_drives.sh
+  when: ansible_os_family != "Darwin"
+
