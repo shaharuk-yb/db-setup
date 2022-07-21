@@ -1,5 +1,5 @@
 - block:
-    - name: Install the script for discovering, updating fstab for & mounting ephemeral drives.
+    - name: Install the script for updating fstab for & mounting drive.
       become: yes
       become_method: sudo
       vars:
@@ -10,7 +10,7 @@
         dest: /usr/local/bin/mount_ephemeral_drives.sh
         owner: root
         mode: 0755
-    - name: Run the idempotent script to mount the drives; output goes to system log file.
+    - name: Run the idempotent script to mount the drive; output goes to system log file.
       become: yes
       become_method: sudo
       command: /usr/local/bin/mount_ephemeral_drives.sh
