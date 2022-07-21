@@ -7,7 +7,7 @@ resource "aws_instance" "test_server" {
   count         = var.node_count
   ami           = var.ami
   instance_type = var.instance_type
-  key_name      = var.pem
+  key_name      = var.pem_file_name
 
   associate_public_ip_address = true
   vpc_security_group_ids      = var.security_group
@@ -23,7 +23,7 @@ resource "aws_instance" "test_server" {
   connection {
     type        = "ssh"
     user        = "centos"
-    private_key = file(var.pem_file_loc)
+    private_key = file(var.pem_file_path)
     host        = self.private_ip
   }
 
@@ -43,6 +43,8 @@ resource "local_file" "AnsibleInventory1" {
   content = templatefile("inventory.tmpl",
     {
       client_ips = aws_instance.test_server.*.private_ip
+      az         = var.az
+      region     = var.region
     }
   )
   filename = "inventory"

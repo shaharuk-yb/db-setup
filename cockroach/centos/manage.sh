@@ -27,8 +27,8 @@ if [ $1 != "chaos" ] && [ -z $2 ]; then
   echo "---------------------------------------------------------------------------------"
 fi
 
-HOSTFILE=${2:-./hostfiles/inventory}
-PEM=${3:-~/.yugabyte/<key.pem>}
+HOSTFILE=./inventory
+PEM=${2:-~/.yugabyte/<key.pem>}
 
 case $1 in
   deploy)
