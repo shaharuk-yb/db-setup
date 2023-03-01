@@ -1,7 +1,7 @@
 {{ install_location }}/cockroach-{{ CDB_SNAPSHOT }}.linux-amd64/cockroach start \
 --listen-addr={{ inventory_hostname }}:26257 \
 --http-addr={{ inventory_hostname }}:8080 \
---store={{ data_dir }}\
+--store={{ mount_path }}/cockroach/data \
 --join={{ HOST_RPC_ADDRS | join(',') }} \
 --locality=region={{ region }},datacenter={{ datacenter }} \
 --insecure --background
