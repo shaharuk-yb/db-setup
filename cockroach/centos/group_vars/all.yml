@@ -10,7 +10,7 @@ mount_path: /mnt/d0
 data_dir: "{{ mount_path }}/cockroach/data"
 out_dir: "{{ mount_path }}/cockroach/conf"
 binary_url: https://binaries.cockroachdb.com
-CDB_SNAPSHOT: v21.2.0
+CDB_SNAPSHOT: v22.2.3
 install_location: "{{ mount_path }}/install/cockroach"
 haproxy_port: 26257
 chaos_time: 60
